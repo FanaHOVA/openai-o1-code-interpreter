@@ -46,7 +46,7 @@ plt.show()
 
 **Figure 1: Labor Productivity in the United States (1947 - Present)**
 
-![Labor Productivity Over Time](attachment:Figure_1.png)
+![Labor Productivity Over Time](Figure_1.png)
 
 ---
 
