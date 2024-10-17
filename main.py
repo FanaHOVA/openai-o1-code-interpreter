@@ -15,7 +15,7 @@ from pydantic import BaseModel
 
 dotenv.load_dotenv()
 
-client = OpenAI()
+client = OpenAI()    
 
 
 class PythonNotebookCell(BaseModel):
