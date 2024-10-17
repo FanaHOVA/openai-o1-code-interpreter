@@ -58,7 +58,7 @@ def extract_code(execution_plan):
 
 def code_interpret(sandbox: Sandbox, code: str):
     print("Running code interpreter...")
-    return sandbox.notebook.exec_cell(
+    return sandbox.run_code(
         code,
         on_stderr=lambda stderr: print("[Code Interpreter]", stderr),
         on_stdout=lambda stdout: print("[Code Interpreter]", stdout),
