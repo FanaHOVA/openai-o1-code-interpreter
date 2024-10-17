@@ -9,7 +9,7 @@ import io
 from PIL import Image
 import matplotlib.pyplot as plt
 from openai import OpenAI
-from e2b_code_interpreter import CodeInterpreter
+from e2b_code_interpreter import Sandbox
 from pydantic import BaseModel
 
 
@@ -56,7 +56,7 @@ def extract_code(execution_plan):
     return result.choices[0].message.parsed
 
 
-def code_interpret(sandbox: CodeInterpreter, code: str):
+def code_interpret(sandbox: Sandbox, code: str):
     print("Running code interpreter...")
     return sandbox.notebook.exec_cell(
         code,
@@ -81,7 +81,7 @@ def display_png(png_data):
 
 
 def run_code(script: PythonNotebookCell):
-    sandbox = CodeInterpreter(timeout=300)
+    sandbox = Sandbox(timeout=300)
 
     code_interpret(sandbox, "pip install " + " ".join(script.pip_packages_required))
 
