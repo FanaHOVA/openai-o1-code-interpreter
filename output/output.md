@@ -170,3 +170,7 @@ plt.show()
 ---
 
 Feel free to adjust the data points or add more events to the dataset for a more detailed analysis.
+
+## Generated Charts
+
+![Chart](charts/output_2.png)
