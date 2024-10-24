@@ -204,13 +204,16 @@ def run_code(script: PythonNotebookCell):
     
     return chart_files
 
+# Other prompts to try:
 
-def main(prompt=None):
-    if prompt is None:
-        # prompt = """
+# prompt = """
         # I want to create a visualization of the growth of the Roman empire population and land under its control. 
         # Mark every important historical event along the way; if you don't have data on the population between two events, just keep it flat.
         # """
+
+
+def main(prompt=None):
+    if prompt is None:
         prompt = """
         I want to create a visualization of market shares of self-driving vehicle manufacturers in 2022 vs 2023 vs 2024. 
         """
