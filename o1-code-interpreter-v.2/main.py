@@ -13,14 +13,18 @@ from openai import OpenAI
 from e2b_code_interpreter import Sandbox
 from pydantic import BaseModel
 
+# Set base directory to the project root
+BASE_DIR = "/Users/terezatizkova/Developer/openai-o1-code-interpreter-2"
+
+# Create output directories relative to project root
+OUTPUT_DIR = os.path.join(BASE_DIR, "output")
+CHARTS_DIR = os.path.join(OUTPUT_DIR, "charts")
+
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+os.makedirs(CHARTS_DIR, exist_ok=True)
 
 dotenv.load_dotenv()
-
 client = OpenAI()    
-
-# Create output directories if they don't exist
-os.makedirs("o1_outputs", exist_ok=True)
-os.makedirs("o1_outputs/charts", exist_ok=True)
 
 
 class PythonNotebookCell(BaseModel):
@@ -77,7 +81,7 @@ def code_interpret(sandbox: Sandbox, code: str):
     )
 
 
-def save_and_display_png(png_data, base_filename):
+def save_and_display_png(png_data):
     """Save PNG to file and display it"""
     image_data = base64.b64decode(png_data)
     
@@ -87,8 +91,16 @@ def save_and_display_png(png_data, base_filename):
     # Open the image using PIL
     image = Image.open(image_buffer)
     
-    # Save the image
-    chart_filename = f"o1_outputs/charts/{base_filename}_{str(uuid.uuid4())[:8]}.png"
+    # Create filename with counter if needed
+    base_filename = "output"
+    chart_filename = os.path.join(CHARTS_DIR, f"{base_filename}.png")
+    
+    # If file exists, append number
+    counter = 1
+    while os.path.exists(chart_filename):
+        chart_filename = os.path.join(CHARTS_DIR, f"{base_filename}_{counter}.png")
+        counter += 1
+    
     image.save(chart_filename)
     print(f"Chart saved as: {chart_filename}")
     
@@ -111,13 +123,15 @@ def update_markdown_with_charts(markdown_path, chart_files):
     # Add chart references at the end of the file
     content += "\n\n## Generated Charts\n"
     for chart_file in chart_files:
-        content += f"\n![Chart]({os.path.relpath(chart_file, os.path.dirname(markdown_path))})\n"
+        # Create relative path from markdown file to chart file
+        rel_path = os.path.relpath(chart_file, os.path.dirname(markdown_path))
+        content += f"\n![Chart]({rel_path})\n"
     
     with open(markdown_path, 'w') as f:
         f.write(content)
 
 
-def run_code(script: PythonNotebookCell, base_filename: str):
+def run_code(script: PythonNotebookCell):
     sandbox = Sandbox(timeout=300)
     chart_files = []
 
@@ -149,7 +163,7 @@ def run_code(script: PythonNotebookCell, base_filename: str):
         print(result)
 
         if hasattr(result, "png"):
-            chart_file = save_and_display_png(result.png, base_filename)
+            chart_file = save_and_display_png(result.png)
             chart_files.append(chart_file)
     
     return chart_files
@@ -168,18 +182,14 @@ def main(prompt=None):
     You have access to a code interpreter that can run python code; display the charts in the notebook.
     """
 
-    cleaned_prompt = re.sub(r"\W+", "_", prompt[:50])
-    base_filename = cleaned_prompt.lower()
-    markdown_path = f"./o1_outputs/{base_filename}.md"
-
-    output = ask_openai(prompt, path=markdown_path)
+    output = ask_openai(prompt, path=os.path.join(OUTPUT_DIR, "output.md"))
     code_to_run = extract_code(output)
     
     # Run code and get list of saved chart files
-    chart_files = run_code(code_to_run, base_filename)
+    chart_files = run_code(code_to_run)
     
     # Update markdown with chart references
-    update_markdown_with_charts(markdown_path, chart_files)
+    update_markdown_with_charts(os.path.join(OUTPUT_DIR, "output.md"), chart_files)
 
 
 if __name__ == "__main__":
