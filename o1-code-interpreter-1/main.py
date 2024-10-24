@@ -106,20 +106,20 @@ def run_code(script: PythonNotebookCell):
         code_to_run = script.code
         print(f"Suggested solution: {code_to_run}")
 
-        execution = sandbox.run_code(code_to_run)
-        chart = execution.results[0].chart
+        # execution = sandbox.run_code(code_to_run)
+        # chart = execution.results[0].chart
 
-        print('Type:', chart.type)
-        print('Title:', chart.title)
-        print('X Label:', chart.x_label)
-        print('Y Label:', chart.y_label)
-        print('X Unit:', chart.x_unit)
-        print('Y Unit:', chart.y_unit)
-        print('Elements:')
-        for element in chart.elements:
-            print('\n  Label:', element.label)
-            print('  Value:', element.value)
-            print('  Group:', element.group)
+        # print('Type:', chart.type)
+        # print('Title:', chart.title)
+        # print('X Label:', chart.x_label)
+        # print('Y Label:', chart.y_label)
+        # print('X Unit:', chart.x_unit)
+        # print('Y Unit:', chart.y_unit)
+        # print('Elements:')
+        # for element in chart.elements:
+        #     print('\n  Label:', element.label)
+        #     print('  Value:', element.value)
+        #     print('  Group:', element.group)
 
     print(results)
     for result in results:
